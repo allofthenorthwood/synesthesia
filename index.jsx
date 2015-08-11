@@ -72,6 +72,7 @@ const App = React.createClass({
             activeGlyph: glyphs[0],
             colors: this.getColors(),
             displayModes: this.getDisplayModes(),
+            textValue: 'The quick brown fox jumps over the lazy dog'
         };
     },
     getColors: function() {
@@ -132,7 +133,56 @@ const App = React.createClass({
             return mode != null ? styles[mode] : styles;
         };
 
+        const printText = function(text) {
+            return _.map(text.split(' '), (word, idx) =>{
+                return <span key={idx}>
+                    {_.map(word, (letter, i) => {
+                        const color = colors[letter.toLowerCase()];
+                        return <span
+                            key={i}
+                            style={{
+                                color: color ? color : '#eee'
+                            }}>{letter}</span>
+                    })}
+                    <span> </span>
+                </span>;
+            });
+        };
+
         return (<div>
+            <div style={{
+                        margin: '40px 20px'
+                    }}>
+                <div>
+                    <input
+                        type="text"
+                        style={{
+                            width: '100%',
+                            fontSize: 20,
+                            padding: 5
+                        }}
+                        value={this.state.textValue}
+                        onChange={(e) => {
+                            this.setState({
+                                textValue: e.target.value
+                            });
+                        }}/>
+                </div>
+                <div style={{
+                            marginTop: 20,
+                            position: 'relative',
+                            fontSize: 30
+                        }}>
+                    {printText(this.state.textValue)}
+                    <div style={{
+                                position: 'absolute',
+                                top: 0,
+                                WebkitFilter: 'blur(4px)'
+                            }}>
+                        {printText(this.state.textValue)}
+                    </div>
+                </div>
+            </div>
             <div style={{
                     display: 'flex'
                 }}>
@@ -169,7 +219,7 @@ const App = React.createClass({
                         const color = colors[glyph];
                         const displayMode = displayModes[glyph] || 0;
                         const style = displayModeStyle(colors[glyph], displayMode);
-                        console.log(displayMode)
+
                         return <Glyph
                                 key={glyph}
                                 style={style}
