@@ -5,30 +5,96 @@ const ColorPicker = require('react-color-picker');
 
 const glyphs = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
+
+// from http://stackoverflow.com/a/13542669
+const shadeColor2 = function(color, percent) {
+    // formatting edited by me from original for clarity
+    // percent should be a number between -1 and 1
+    var f = parseInt(color.slice(1),16);
+    var t = percent < 0 ? 0 : 255;
+    var p = percent < 0 ? percent * -1 : percent;
+    var R = f >> 16;
+    var G = f >> 8 & 0x00FF;
+    var B = f & 0x0000FF;
+    return "#" + (0x1000000 +
+            (Math.round((t - R) * p) + R) * 0x10000 +
+            (Math.round((t - G) * p) + G) * 0x100 +
+            (Math.round((t - B) * p) + B)
+        ).toString(16).slice(1);
+};
+
 // from http://stackoverflow.com/a/901144
-const getParameterByName = function (name) {
+const getParameterByName = function(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(location.search);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
+    return results === null ? "" :
+                        decodeURIComponent(results[1].replace(/\+/g, " "));
+};
 
 const Glyph = React.createClass({
     render: function() {
         const size = this.props.size || 80;
-        const styles = {
+        const color = this.props.color || '#eeeeee';
+        let textShadow = '';
+        let fontWeight = 'normal';
+        let background = '#222';
+        if (size > 100) {
+            fontWeight = 700;
+            // 3D font text shadow from http://markdotto.com/playground/3d-text/
+            textShadow =
+                '0 2px 0 '+shadeColor2(color,  0.1)+',' +
+                '0 3px 0 '+shadeColor2(color, -0.1)+',' +
+                '0 4px 0 '+shadeColor2(color, -0.15)+',' +
+                '0 5px 0 '+shadeColor2(color, -0.2)+',' +
+                '0 6px 0 '+shadeColor2(color, -0.25)+',' +
+                '0 7px 0 '+shadeColor2(color, -0.3)+',' +
+                '0 8px 0 '+shadeColor2(color, -0.3)+',' +
+                '0 7px 1px rgba(0,0,0,.1),'+
+                '0 0 5px rgba(0,0,0,.1),'+
+                '0 1px 3px rgba(0,0,0,.3),'+
+                '0 3px 5px rgba(0,0,0,.2),'+
+                '0 5px 10px rgba(0,0,0,.25),'+
+                '0 10px 10px rgba(0,0,0,.2),'+
+                '0 20px 20px rgba(0,0,0,.15)';
+            background = 'radial-gradient(ellipse at center,'+
+                         'rgba(100,100,100,1) 0%,'+
+                         'rgba(60,60,60,1) 100%)';
+        } else {
+            textShadow =
+                '0 1px 0 '+shadeColor2(color,  0.1)+',' +
+                '0 2px 0 '+shadeColor2(color, -0.2)+',' +
+                '0 3px 0 '+shadeColor2(color, -0.2)+',' +
+                '0 4px 0 '+shadeColor2(color, -0.3)+',' +
+                '0 7px 1px rgba(0,0,0,.1),'+
+                '0 0 5px rgba(0,0,0,.1),'+
+                '0 1px 3px rgba(0,0,0,.3),'+
+                '0 3px 5px rgba(0,0,0,.3),';
+            background = 'radial-gradient(ellipse at center,'+
+                         'rgba(80,80,80,1) 0%,'+
+                         'rgba(60,60,60,1) 100%)';
+        }
+        const letterStyles = {
+            boxSizing: 'border-box',
+            color: color,
             display: 'inline-block',
-            border: '1px solid #eee',
-            margin: 5,
-            background: '#fff',
-            width: size,
-            lineHeight: size + 'px',
-            height: size,
-            fontSize: size / 2,
-            textAlign: 'center',
+            fontSize: size * 0.7,
+            lineHeight: size * 0.9 + 'px',
+            padding: 1,
+            textShadow: textShadow,
         };
+        const squareStyles = {
+            background: background,
+            fontWeight: fontWeight,
+            height: size,
+            margin: 3,
+            textAlign: 'center',
+            width: size,
+        };
+        const styles = !this.props.showBackground ? letterStyles :
+                                _.extend({}, letterStyles, squareStyles);
         return <span
-                style={_.extend(styles, this.props.style)}
+                style={styles}
                 key={this.props.key}
                 onClick={this.props.onClick}>
             {this.props.children}
@@ -43,7 +109,7 @@ const ColorPickerScreen = React.createClass({
     render: function() {
         const glyph = this.props.activeGlyph;
         const glyphColor = this.props.activeColor || '#999';
-        const size = 160;
+        const size = 340;
 
         return <div>
             <ColorPicker
@@ -51,17 +117,12 @@ const ColorPickerScreen = React.createClass({
                 defaultValue={glyphColor}
                 color={glyphColor}
                 onDrag={this.onDrag}/>
-            {_.map(this.props.displayModeStyles, (style, idx) => {
-                return <Glyph
-                    size={size}
-                    key={idx}
-                    onClick={() => {
-                        this.props.onDisplayModeChange(idx);
-                    }}
-                    style={style}>
-                    {glyph}
-                </Glyph>
-            })}
+            <Glyph
+                showBackground={true}
+                size={size}
+                color={glyphColor}>
+                {glyph}
+            </Glyph>
         </div>;
     }
 });
@@ -71,7 +132,6 @@ const App = React.createClass({
         return {
             activeGlyph: glyphs[0],
             colors: this.getColors(),
-            displayModes: this.getDisplayModes(),
             textValue: 'The quick brown fox jumps over the lazy dog'
         };
     },
@@ -79,154 +139,142 @@ const App = React.createClass({
         const colors = getParameterByName('colors');
         return colors.length ? JSON.parse(colors) : {};
     },
-    getDisplayModes: function() {
-        const displayModes = getParameterByName('displayModes');
-        return displayModes.length ? JSON.parse(displayModes) : {};
-    },
     onColorChange: function(color) {
         let colors = _.clone(this.state.colors);
         const glyph = this.state.activeGlyph;
         colors[glyph] = color;
         this.setState({
             colors: colors,
-        })
-    },
-    onDisplayModeChange: function(displayMode) {
-        let displayModes = _.clone(this.state.displayModes);
-        const glyph = this.state.activeGlyph;
-        displayModes[glyph] = displayMode;
-        this.setState({
-            displayModes: displayModes,
-        })
+        });
     },
     render: function() {
         const colors = this.state.colors;
-        const displayModes = this.state.displayModes;
         const activeGlyph = this.state.activeGlyph;
         const activeColor = colors[activeGlyph];
 
         const stringifyColors = encodeURIComponent(JSON.stringify(colors));
-        const stringifyDisplayModes = encodeURIComponent(JSON.stringify(displayModes));
-        const url = 'http://localhost:8090/?' +
-            'colors=' + stringifyColors +
-            '&displayModes=' + stringifyDisplayModes;
-
-        const displayModeStyle = function(color, mode) {
-            const styles = [
-                {
-                    background: color,
-                    color: '#eee'
-                },
-                {
-                    color: color,
-                    background: '#eee'
-                },
-                {
-                    background: color,
-                    color: '#444'
-                },
-                {
-                    color: color,
-                    background: '#444'
-                }
-            ];
-            return mode != null ? styles[mode] : styles;
-        };
+        const url = 'http://localhost:8090/?' + 'colors=' + stringifyColors;
 
         const printText = function(text) {
-            return _.map(text.split(' '), (word, idx) =>{
-                return <span key={idx}>
-                    {_.map(word, (letter, i) => {
-                        const color = colors[letter.toLowerCase()];
+            return _.map(text.split("\n"), (line, lineIdx) => {
+
+                return <div key={lineIdx}>
+                    {_.map(line.split(' '), (word, wordIdx) => {
+
                         return <span
-                            key={i}
-                            style={{
-                                color: color ? color : '#eee'
-                            }}>{letter}</span>
+                                    key={wordIdx}
+                                    style={{ display: 'inline-block' }}>
+                            {_.map(word, (letter, letterIdx) => {
+                                const color = colors[letter.toLowerCase()];
+                                return <Glyph
+                                    key={letterIdx}
+                                    size={100}
+                                    color={color}>
+                                    {letter}
+                                </Glyph>;
+                            })}
+                            <span>&nbsp;</span>
+                        </span>;
                     })}
-                    <span> </span>
-                </span>;
+                </div>;
             });
         };
 
         return (<div>
             <div style={{
-                        margin: '40px 20px'
+                        background: 'radial-gradient(ellipse at center,'+
+                                    'rgba(100,100,100,1) 0%,'+
+                                    'rgba(60,60,60,1) 100%)',
+                        padding: '10px',
+                        overflowY: 'auto',
+                        position: 'absolute',
+                        top: 0,
+                        right: 390,
+                        bottom: 0,
+                        left: 0
                     }}>
                 <div>
-                    <input
+                    <textarea
                         type="text"
                         style={{
+                            background: 'none',
+                            color: '#fff',
                             width: '100%',
-                            fontSize: 20,
-                            padding: 5
+                            boxSizing: 'border-box',
+                            fontSize: 30,
+                            padding: '10px 20px',
                         }}
                         value={this.state.textValue}
                         onChange={(e) => {
                             this.setState({
                                 textValue: e.target.value
                             });
-                        }}/>
+                        }}></textarea>
                 </div>
                 <div style={{
-                            marginTop: 20,
+                            margin: '20px 20px 40px',
                             position: 'relative',
-                            fontSize: 30
+                            fontSize: 80,
                         }}>
                     {printText(this.state.textValue)}
                     <div style={{
+                                opacity: 0.4,
                                 position: 'absolute',
                                 top: 0,
-                                WebkitFilter: 'blur(4px)'
+                                WebkitFilter: 'blur(14px)'
                             }}>
                         {printText(this.state.textValue)}
                     </div>
                 </div>
             </div>
             <div style={{
-                    display: 'flex'
+                    background: '#222',
+                    position: 'absolute',
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                    padding: 20,
+                    overflowY: 'auto',
+                    textAlign: 'center',
+                    width: 350,
                 }}>
-                <div style={{
-                            width: '380px',
-                            textAlign: 'center'
-                        }}>
-                    <ColorPickerScreen
-                        activeGlyph={activeGlyph}
-                        activeColor={activeColor}
-                        onColorChange={this.onColorChange}
-                        displayModeStyles={displayModeStyle(activeColor)}
-                        onDisplayModeChange={this.onDisplayModeChange}/>
-
-                    <div style={{ textAlign: 'center' }}>
+                <div>
+                    <div style={{ marginBottom: 20 }}>
                         <a
                             style={{
                                 background: '#eee',
                                 border: '1px solid #ddd',
-                                padding: 10,
                                 borderRadius: 5,
+                                boxSizing: 'border-box',
+                                color: '#444',
                                 display: 'inline-block',
+                                fontSize: 20,
+                                padding: 10,
                                 textDecoration: 'none',
-                                color: '#444'
+                                width: '100%',
 
                             }}
-                            href={url}>Permalink</a>
+                            href={url}>Permalink these colors</a>
                     </div>
+                    <ColorPickerScreen
+                        activeGlyph={activeGlyph}
+                        activeColor={activeColor}
+                        onColorChange={this.onColorChange}/>
                 </div>
-                <div style={{
-                            flex: 1
-                        }}>
+                <div>
                     {_.map(glyphs, (glyph, idx) => {
                         const color = colors[glyph];
-                        const displayMode = displayModes[glyph] || 0;
-                        const style = displayModeStyle(colors[glyph], displayMode);
 
                         return <Glyph
                                 key={glyph}
-                                style={style}
+                                color={color}
+                                size={80}
+                                showBackground={true}
                                 onClick={() => {
-                                    this.setState({
-                                        activeGlyph: glyph
-                                    })}
+                                        this.setState({
+                                            activeGlyph: glyph
+                                        });
+                                    }
                                 }>
                             {glyph}
                         </Glyph>;
