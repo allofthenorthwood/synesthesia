@@ -108,7 +108,7 @@ const ColorPickerScreen = React.createClass({
     },
     render: function() {
         const glyph = this.props.activeGlyph;
-        const glyphColor = this.props.activeColor || '#999';
+        const glyphColor = this.props.activeColor;
         const size = 340;
 
         return <div>
