@@ -127,7 +127,7 @@
 	    },
 	    render: function render() {
 	        var glyph = this.props.activeGlyph;
-	        var glyphColor = this.props.activeColor || '#999';
+	        var glyphColor = this.props.activeColor;
 	        var size = 340;
 
 	        return React.createElement(
