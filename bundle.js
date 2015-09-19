@@ -84,6 +84,7 @@
 	        var background = '#222';
 	        if (size > 100) {
 	            fontWeight = 700;
+	            // 3D font text shadow from http://markdotto.com/playground/3d-text/
 	            textShadow = '0 2px 0 ' + shadeColor2(color, 0.1) + ',' + '0 3px 0 ' + shadeColor2(color, -0.1) + ',' + '0 4px 0 ' + shadeColor2(color, -0.15) + ',' + '0 5px 0 ' + shadeColor2(color, -0.2) + ',' + '0 6px 0 ' + shadeColor2(color, -0.25) + ',' + '0 7px 0 ' + shadeColor2(color, -0.3) + ',' + '0 8px 0 ' + shadeColor2(color, -0.3) + ',' + '0 7px 1px rgba(0,0,0,.1),' + '0 0 5px rgba(0,0,0,.1),' + '0 1px 3px rgba(0,0,0,.3),' + '0 3px 5px rgba(0,0,0,.2),' + '0 5px 10px rgba(0,0,0,.25),' + '0 10px 10px rgba(0,0,0,.2),' + '0 20px 20px rgba(0,0,0,.15)';
 	            background = 'radial-gradient(ellipse at center,' + 'rgba(100,100,100,1) 0%,' + 'rgba(60,60,60,1) 100%)';
 	        } else {
@@ -180,7 +181,7 @@
 	        var activeColor = colors[activeGlyph];
 
 	        var stringifyColors = encodeURIComponent(JSON.stringify(colors));
-	        var url = 'http://localhost:8090/?' + 'colors=' + stringifyColors;
+	        var url = '/?' + 'colors=' + stringifyColors;
 
 	        var printText = function printText(text) {
 	            return _.map(text.split("\n"), function (line, lineIdx) {
