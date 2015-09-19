@@ -153,7 +153,7 @@ const App = React.createClass({
         const activeColor = colors[activeGlyph];
 
         const stringifyColors = encodeURIComponent(JSON.stringify(colors));
-        const url = '/?' + 'colors=' + stringifyColors;
+        const url = './?' + 'colors=' + stringifyColors;
 
         const printText = function(text) {
             return _.map(text.split("\n"), (line, lineIdx) => {

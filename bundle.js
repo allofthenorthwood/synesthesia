@@ -181,7 +181,7 @@
 	        var activeColor = colors[activeGlyph];
 
 	        var stringifyColors = encodeURIComponent(JSON.stringify(colors));
-	        var url = '/?' + 'colors=' + stringifyColors;
+	        var url = './?' + 'colors=' + stringifyColors;
 
 	        var printText = function printText(text) {
 	            return _.map(text.split("\n"), function (line, lineIdx) {
