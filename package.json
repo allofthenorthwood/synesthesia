@@ -1,7 +1,7 @@
 {
-  "name": "arithmetic",
+  "name": "synesthesia",
   "version": "0.0.1",
-  "description": "Long Arithmetic",
+  "description": "Synesthesia color viewer",
   "main": "index.jsx",
   "repository": {
     "type": "git",
