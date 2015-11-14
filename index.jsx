@@ -169,6 +169,8 @@ const App = React.createClass({
                     key={lineIdx}
                     style={{
                         height: line.trim().length === 0 ? '92px' : 'auto',
+                        wordWrap: 'break-word',
+                        whiteSpace: 'pre-wrap',
                     }}
                 >
                     {_.map(line.split(' '), (word, wordIdx) => {
