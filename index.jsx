@@ -1,5 +1,6 @@
 const _ = require('underscore');
 const React = require('react');
+const ReactDOM = require('react-dom');
 const ColorPicker = require('react-color-picker');
 
 
@@ -285,4 +286,4 @@ const App = React.createClass({
     }
 });
 
-React.render(<App />, document.body);
+ReactDOM.render(<App />, document.getElementById('content'));

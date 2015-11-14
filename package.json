@@ -22,9 +22,10 @@
     "webpack-dev-server": "^1.8.0"
   },
   "dependencies": {
-    "react": "^0.13.1",
+    "react": "^0.14.1",
     "react-art": "^0.13.0",
     "react-color-picker": "^2.1.9",
+    "react-dom": "^0.14.2",
     "underscore": "^1.8.3"
   }
 }
