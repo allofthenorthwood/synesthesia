@@ -224,7 +224,7 @@ const App = React.createClass({
                             background: 'none',
                             border: 'none',
                             color: '#fff',
-                            '-webkit-text-fill-color': 'transparent',
+                            WebkitTextFillColor: 'transparent',
                             fontFamily: 'lato, sans-serif',
                             width: '100%',
                             height: (this.state.textAreaHeight) + "px",
