@@ -133,7 +133,8 @@ const App = React.createClass({
         return {
             activeGlyph: glyphs[0],
             colors: this.getColors(),
-            textValue: 'The quick brown fox jumps over the lazy dog'
+            textValue: 'The quick brown fox jumps over the lazy dog',
+            textAreaHeight: 300,
         };
     },
     getColors: function() {
@@ -146,6 +147,11 @@ const App = React.createClass({
         colors[glyph] = color;
         this.setState({
             colors: colors,
+        });
+    },
+    componentDidMount: function() {
+        this.setState({
+            textAreaHeight: this.inputTextarea.scrollHeight,
         });
     },
     render: function() {
@@ -186,7 +192,6 @@ const App = React.createClass({
                         background: 'radial-gradient(ellipse at center,'+
                                     'rgba(100,100,100,1) 0%,'+
                                     'rgba(60,60,60,1) 100%)',
-                        padding: '10px',
                         overflowY: 'auto',
                         position: 'absolute',
                         top: 0,
@@ -194,16 +199,36 @@ const App = React.createClass({
                         bottom: 0,
                         left: 0
                     }}>
-                <div>
+                <div style={{
+                    position: 'absolute',
+                    boxSizing: 'border-box',
+                    width: '100%',
+                    zIndex: 1000,
+                    padding: '20px 20px 40px',
+                }}>
                     <textarea
                         type="text"
+                        onkeyup="textAreaAdjust(this)"
                         style={{
                             background: 'none',
+                            border: 'none',
                             color: '#fff',
+                            '-webkit-text-fill-color': 'transparent',
+                            fontFamily: 'lato, sans-serif',
                             width: '100%',
-                            boxSizing: 'border-box',
-                            fontSize: 30,
-                            padding: '10px 20px',
+                            height: (this.state.textAreaHeight) + "px",
+                            overflow: 'hidden',
+                            outline: 'none',
+                            fontSize: 70,
+                            lineHeight: '92px',
+                            letterSpacing: '2px',
+                            padding: 0,
+                        }}
+                        ref={(ref) => this.inputTextarea = ref}
+                        onKeyUp={(e) => {
+                            this.setState({
+                                textAreaHeight: e.target.scrollHeight,
+                            });
                         }}
                         value={this.state.textValue}
                         onChange={(e) => {
