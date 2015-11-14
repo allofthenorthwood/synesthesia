@@ -165,6 +165,7 @@ const App = React.createClass({
         const printText = function(text) {
             return _.map(text.split("\n"), (line, lineIdx) => {
 
+                const words = line.split(' ');
                 return <div
                     key={lineIdx}
                     style={{
@@ -173,11 +174,10 @@ const App = React.createClass({
                         whiteSpace: 'pre-wrap',
                     }}
                 >
-                    {_.map(line.split(' '), (word, wordIdx) => {
+                    {_.map(words, (word, wordIdx) => {
 
-                        return <span
-                                    key={wordIdx}
-                                    style={{ display: 'inline-block' }}>
+                        return <span key={wordIdx}>
+                            <span style={{ display: 'inline-block' }}>
                             {_.map(word, (letter, letterIdx) => {
                                 const color = colors[letter.toLowerCase()];
                                 return <Glyph
@@ -187,7 +187,11 @@ const App = React.createClass({
                                     {letter}
                                 </Glyph>;
                             })}
-                            <span>&nbsp;</span>
+                            </span>
+                            {wordIdx !== words.length - 1 &&
+                                <span style={{display: 'inline-block'}}>
+                                    &nbsp;
+                            </span>}
                         </span>;
                     })}
                 </div>;
