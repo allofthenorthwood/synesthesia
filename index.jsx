@@ -165,7 +165,12 @@ const App = React.createClass({
         const printText = function(text) {
             return _.map(text.split("\n"), (line, lineIdx) => {
 
-                return <div key={lineIdx}>
+                return <div
+                    key={lineIdx}
+                    style={{
+                        height: line.trim().length === 0 ? '92px' : 'auto',
+                    }}
+                >
                     {_.map(line.split(' '), (word, wordIdx) => {
 
                         return <span
