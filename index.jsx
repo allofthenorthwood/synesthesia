@@ -110,20 +110,29 @@ const ColorPickerScreen = React.createClass({
     render: function() {
         const glyph = this.props.activeGlyph;
         const glyphColor = this.props.activeColor;
-        const size = 340;
+        const size = 150;
 
         return <div>
-            <ColorPicker
-                key={glyphColor}
-                defaultValue={glyphColor}
-                color={glyphColor}
-                onDrag={this.onDrag}/>
             <Glyph
                 showBackground={true}
                 size={size}
                 color={glyphColor}>
                 {glyph}
             </Glyph>
+            <div style={{
+                display: 'inline-block',
+                verticalAlign: 'top',
+                margin: 3,
+            }}>
+            <ColorPicker
+                key={glyphColor}
+                defaultValue={glyphColor}
+                color={glyphColor}
+                saturationWidth={150}
+                saturationHeight={150}
+                hueWidth={20}
+                onDrag={this.onDrag}/>
+            </div>
         </div>;
     }
 });
