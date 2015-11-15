@@ -314,7 +314,7 @@ const App = React.createClass({
                         return <Glyph
                                 key={glyph}
                                 color={color}
-                                size={80}
+                                size={51}
                                 showBackground={true}
                                 onClick={() => {
                                         this.setState({
