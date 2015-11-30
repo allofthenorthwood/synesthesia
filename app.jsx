@@ -1,4 +1,5 @@
 const _ = require('underscore');
+const { StyleSheet, css } = require('./lib/aphrodite.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
 const ColorPicker = require('react-color-picker');
@@ -257,49 +258,18 @@ const App = React.createClass({
                             });
                         }}></textarea>
                 </div>
-                <div style={{
-                            margin: '20px 20px 40px',
-                            position: 'relative',
-                            fontSize: 80,
-                        }}>
+                <div className={css(ST.outputText)}>
                     {printText(this.state.textValue)}
-                    <div style={{
-                                opacity: 0.4,
-                                position: 'absolute',
-                                top: 0,
-                                WebkitFilter: 'blur(14px)'
-                            }}>
+                    <div className={css(ST.blurredOutputText)}>
                         {printText(this.state.textValue)}
                     </div>
                 </div>
             </div>
-            <div style={{
-                    background: '#222',
-                    position: 'absolute',
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                    padding: 20,
-                    overflowY: 'auto',
-                    textAlign: 'center',
-                    width: 350,
-                }}>
+            <div className={css(ST.sidebar)}>
                 <div>
                     <div style={{ marginBottom: 20 }}>
                         <a
-                            style={{
-                                background: '#eee',
-                                border: '1px solid #ddd',
-                                borderRadius: 5,
-                                boxSizing: 'border-box',
-                                color: '#444',
-                                display: 'inline-block',
-                                fontSize: 20,
-                                padding: 10,
-                                textDecoration: 'none',
-                                width: '100%',
-
-                            }}
+                            className={css(ST.button)}
                             href={url}>Permalink these colors</a>
                     </div>
                     <ColorPickerScreen
@@ -329,6 +299,44 @@ const App = React.createClass({
             </div>
         </div>);
     }
+});
+
+const ST = StyleSheet.create({
+    outputText: {
+        margin: '20px 20px 40px',
+        position: 'relative',
+        fontSize: 80,
+    },
+    blurredOutputText: {
+        opacity: 0.4,
+        position: 'absolute',
+        top: 0,
+        WebkitFilter: 'blur(14px)'
+    },
+
+    sidebar: {
+        background: '#222',
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        bottom: 0,
+        padding: 20,
+        overflowY: 'auto',
+        textAlign: 'center',
+        width: 350,
+    },
+    button: {
+        background: '#eee',
+        border: '1px solid #ddd',
+        borderRadius: 5,
+        boxSizing: 'border-box',
+        color: '#444',
+        display: 'inline-block',
+        fontSize: 20,
+        padding: 10,
+        textDecoration: 'none',
+        width: '100%',
+    },
 });
 
 module.exports = App;
