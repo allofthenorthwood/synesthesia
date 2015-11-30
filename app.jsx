@@ -40,77 +40,91 @@ const SC = {
     sidebarPadding: 20,
     hueWidth: 10,
     glyphMargin: 3,
+
+    outputTextSize: 40,
+    letterSpacing: 2,
+    lineHeight: 1.3,
 };
 
-const Glyph = React.createClass({
-    render: function() {
-        const size = this.props.size || 80;
-        const color = this.props.color || '#eeeeee';
-        let textShadow = '';
-        let fontWeight = 'normal';
-        let background = '#222';
-        if (size > 100) {
-            fontWeight = 700;
-            // 3D font text shadow from http://markdotto.com/playground/3d-text/
-            textShadow =
-                '0 2px 0 '+shadeColor2(color,  0.1)+',' +
-                '0 3px 0 '+shadeColor2(color, -0.1)+',' +
-                '0 4px 0 '+shadeColor2(color, -0.15)+',' +
-                '0 5px 0 '+shadeColor2(color, -0.2)+',' +
-                '0 6px 0 '+shadeColor2(color, -0.25)+',' +
-                '0 7px 0 '+shadeColor2(color, -0.3)+',' +
-                '0 8px 0 '+shadeColor2(color, -0.3)+',' +
-                '0 7px 1px rgba(0,0,0,.1),'+
-                '0 0 5px rgba(0,0,0,.1),'+
-                '0 1px 3px rgba(0,0,0,.3),'+
-                '0 3px 5px rgba(0,0,0,.2),'+
-                '0 5px 10px rgba(0,0,0,.25),'+
-                '0 10px 10px rgba(0,0,0,.2),'+
-                '0 20px 20px rgba(0,0,0,.15)';
-            background = 'radial-gradient(ellipse at center,'+
-                         'rgba(100,100,100,1) 0%,'+
-                         'rgba(60,60,60,1) 100%)';
-        } else {
-            textShadow =
-                '0 1px 0 '+shadeColor2(color,  0.1)+',' +
-                '0 2px 0 '+shadeColor2(color, -0.3)+',' +
-                '0 3px 0 '+shadeColor2(color, -0.4)+',' +
-                '0 4px 0 '+shadeColor2(color, -0.5)+',' +
-                '0 7px 1px rgba(0,0,0,.1),'+
-                '0 0 5px rgba(0,0,0,.1),'+
-                '0 1px 3px rgba(0,0,0,.3),'+
-                '0 3px 5px rgba(0,0,0,.3),';
-            background = 'radial-gradient(ellipse at center,'+
-                         'rgba(80,80,80,1) 0%,'+
-                         'rgba(60,60,60,1) 100%)';
-        }
-        const letterStyles = {
-            boxSizing: 'border-box',
-            color: color,
-            display: 'inline-block',
-            fontSize: size * 0.7,
-            lineHeight: size * 0.9 + 'px',
-            padding: 1,
-            textShadow: textShadow,
-        };
-        const squareStyles = {
-            background: background,
-            fontWeight: fontWeight,
-            height: size,
-            margin: SC.glyphMargin,
-            textAlign: 'center',
-            width: size,
-        };
-        const styles = !this.props.showBackground ? letterStyles :
-                                _.extend({}, letterStyles, squareStyles);
-        return <span
-                style={styles}
-                key={this.props.key}
-                onClick={this.props.onClick}>
-            {this.props.children}
-        </span>;
+const Glyph = (props) => {
+    const size = props.size || 80;
+    const color = props.color || '#eeeeee';
+    let textShadow = '';
+    let fontWeight = 'normal';
+    let background = '#222';
+    if (size > 100) {
+        fontWeight = 700;
+        // 3D font text shadow from http://markdotto.com/playground/3d-text/
+        textShadow =
+            '0 2px 0 '+shadeColor2(color,  0.1)+',' +
+            '0 3px 0 '+shadeColor2(color, -0.1)+',' +
+            '0 4px 0 '+shadeColor2(color, -0.15)+',' +
+            '0 5px 0 '+shadeColor2(color, -0.2)+',' +
+            '0 6px 0 '+shadeColor2(color, -0.25)+',' +
+            '0 7px 0 '+shadeColor2(color, -0.3)+',' +
+            '0 8px 0 '+shadeColor2(color, -0.3)+',' +
+            '0 7px 1px rgba(0,0,0,.1),'+
+            '0 0 5px rgba(0,0,0,.1),'+
+            '0 1px 3px rgba(0,0,0,.3),'+
+            '0 3px 5px rgba(0,0,0,.2),'+
+            '0 5px 10px rgba(0,0,0,.25),'+
+            '0 10px 10px rgba(0,0,0,.2),'+
+            '0 20px 20px rgba(0,0,0,.15)';
+    } else {
+        textShadow =
+            '0 1px 0 '+shadeColor2(color,  0.1)+',' +
+            '0 2px 0 '+shadeColor2(color, -0.3)+',' +
+            '0 3px 0 '+shadeColor2(color, -0.4)+',' +
+            '0 4px 0 '+shadeColor2(color, -0.5)+',' +
+            '0 7px 1px rgba(0,0,0,.1),'+
+            '0 0 5px rgba(0,0,0,.1),'+
+            '0 1px 3px rgba(0,0,0,.3),'+
+            '0 3px 5px rgba(0,0,0,.3),';
     }
-});
+    const letterStyles = {
+        boxSizing: 'border-box',
+        color: color,
+        display: 'inline-block',
+        fontSize: size,
+        lineHeight: size * SC.lineHeight + 'px',
+        letterSpacing: SC.letterSpacing,
+        textShadow: textShadow,
+    };
+    return <span
+            style={letterStyles}
+            onClick={props.onClick}>
+        {props.children}
+    </span>;
+};
+
+const SquareGlyph = (props) => {
+    const size = props.size || 80;
+    const color = props.color || '#eeeeee';
+    let background = '#222';
+    if (size > 100) {
+        background = 'radial-gradient(ellipse at center,'+
+                     'rgba(100,100,100,1) 0%,'+
+                     'rgba(60,60,60,1) 100%)';
+    } else {
+        background = 'radial-gradient(ellipse at center,'+
+                     'rgba(80,80,80,1) 0%,'+
+                     'rgba(60,60,60,1) 100%)';
+    }
+    const squareStyles = {
+        background: background,
+        display: 'inline-block',
+        height: size,
+        margin: SC.glyphMargin,
+        textAlign: 'center',
+        width: size,
+    };
+    return <span style={squareStyles}>
+        <Glyph
+            {...props}
+            size={size / SC.lineHeight * 0.9}
+        />
+    </span>;
+};
 
 const ColorPickerScreen = React.createClass({
     onDrag: function(color, c) {
@@ -124,12 +138,12 @@ const ColorPickerScreen = React.createClass({
             4 * SC.glyphMargin) / 2;
 
         return <div>
-            <Glyph
+            <SquareGlyph
                 showBackground={true}
                 size={size}
                 color={glyphColor}>
                 {glyph}
-            </Glyph>
+            </SquareGlyph>
             <div className={css(ST.colorPickerWrapper)}>
             <ColorPicker
                 key={glyphColor}
@@ -185,7 +199,7 @@ const App = React.createClass({
                 return <div
                     key={lineIdx}
                     style={{
-                        height: line.trim().length === 0 ? '92px' : 'auto',
+                        height: line.trim().length === 0 ? SC.outputTextSize * SC.lineHeight : 'auto',
                         wordWrap: 'break-word',
                         whiteSpace: 'pre-wrap',
                     }}
@@ -198,14 +212,14 @@ const App = React.createClass({
                                 const color = colors[letter.toLowerCase()];
                                 return <Glyph
                                     key={letterIdx}
-                                    size={100}
+                                    size={SC.outputTextSize}
                                     color={color}>
                                     {letter}
                                 </Glyph>;
                             })}
                             </span>
                             {wordIdx !== words.length - 1 &&
-                                <span style={{display: 'inline-block'}}>
+                                <span className={css(ST.outputSpace)}>
                                     &nbsp;
                             </span>}
                         </span>;
@@ -269,7 +283,7 @@ const App = React.createClass({
                             glyphsPerRow
                         );
 
-                        return <Glyph
+                        return <SquareGlyph
                                 key={glyph}
                                 color={color}
                                 size={glyphSize}
@@ -281,7 +295,7 @@ const App = React.createClass({
                                     }
                                 }>
                             {glyph}
-                        </Glyph>;
+                        </SquareGlyph>;
                     })}
                 </div>
             </div>
@@ -319,26 +333,30 @@ const ST = StyleSheet.create({
         background: 'none',
         border: 'none',
         color: '#fff',
-        WebkitTextFillColor: 'transparent',
         fontFamily: 'lato, sans-serif',
         width: '100%',
         overflow: 'hidden',
         outline: 'none',
-        fontSize: 70,
-        lineHeight: '92px',
-        letterSpacing: '2px',
+        fontSize: SC.outputTextSize,
+        lineHeight: SC.lineHeight,
+        letterSpacing: SC.letterSpacing,
         padding: 0,
+        WebkitTextFillColor: 'transparent',
     },
     outputText: {
         margin: '20px 20px 40px',
         position: 'relative',
-        fontSize: 80,
+        fontSize: SC.outputTextSize,
     },
     blurredOutputText: {
         opacity: 0.4,
         position: 'absolute',
         top: 0,
         WebkitFilter: 'blur(14px)'
+    },
+    outputSpace: {
+        display: 'inline-block',
+        letterSpacing: SC.letterSpacing
     },
 
     sidebar: {
