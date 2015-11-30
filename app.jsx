@@ -34,6 +34,14 @@ const getParameterByName = function(name) {
                         decodeURIComponent(results[1].replace(/\+/g, " "));
 };
 
+const SC = {
+    // Style constants
+    sidebarWidth: 200,
+    sidebarPadding: 20,
+    hueWidth: 10,
+    glyphMargin: 3,
+};
+
 const Glyph = React.createClass({
     render: function() {
         const size = this.props.size || 80;
@@ -65,9 +73,9 @@ const Glyph = React.createClass({
         } else {
             textShadow =
                 '0 1px 0 '+shadeColor2(color,  0.1)+',' +
-                '0 2px 0 '+shadeColor2(color, -0.2)+',' +
-                '0 3px 0 '+shadeColor2(color, -0.2)+',' +
-                '0 4px 0 '+shadeColor2(color, -0.3)+',' +
+                '0 2px 0 '+shadeColor2(color, -0.3)+',' +
+                '0 3px 0 '+shadeColor2(color, -0.4)+',' +
+                '0 4px 0 '+shadeColor2(color, -0.5)+',' +
                 '0 7px 1px rgba(0,0,0,.1),'+
                 '0 0 5px rgba(0,0,0,.1),'+
                 '0 1px 3px rgba(0,0,0,.3),'+
@@ -89,7 +97,7 @@ const Glyph = React.createClass({
             background: background,
             fontWeight: fontWeight,
             height: size,
-            margin: 3,
+            margin: SC.glyphMargin,
             textAlign: 'center',
             width: size,
         };
@@ -111,7 +119,9 @@ const ColorPickerScreen = React.createClass({
     render: function() {
         const glyph = this.props.activeGlyph;
         const glyphColor = this.props.activeColor;
-        const size = 150;
+        const size = (SC.sidebarWidth -
+            SC.hueWidth - 10 -
+            4 * SC.glyphMargin) / 2;
 
         return <div>
             <Glyph
@@ -120,18 +130,14 @@ const ColorPickerScreen = React.createClass({
                 color={glyphColor}>
                 {glyph}
             </Glyph>
-            <div style={{
-                display: 'inline-block',
-                verticalAlign: 'top',
-                margin: 3,
-            }}>
+            <div className={css(ST.colorPickerWrapper)}>
             <ColorPicker
                 key={glyphColor}
                 defaultValue={glyphColor}
                 color={glyphColor}
-                saturationWidth={150}
-                saturationHeight={150}
-                hueWidth={20}
+                saturationWidth={size}
+                saturationHeight={size}
+                hueWidth={SC.hueWidth}
                 onDrag={this.onDrag}/>
             </div>
         </div>;
@@ -208,42 +214,17 @@ const App = React.createClass({
             });
         };
 
+        const glyphButtonSize = SC.sidebarWidth
+
         return (<div>
-            <div style={{
-                        background: 'radial-gradient(ellipse at center,'+
-                                    'rgba(100,100,100,1) 0%,'+
-                                    'rgba(60,60,60,1) 100%)',
-                        overflowY: 'auto',
-                        position: 'absolute',
-                        top: 0,
-                        right: 390,
-                        bottom: 0,
-                        left: 0
-                    }}>
-                <div style={{
-                    position: 'absolute',
-                    boxSizing: 'border-box',
-                    width: '100%',
-                    zIndex: 1000,
-                    padding: '20px 20px 40px',
-                }}>
+            <div className={css(ST.textContainer)}>
+                <div className={css(ST.innerTextContainer)}>
                     <textarea
                         type="text"
                         onkeyup="textAreaAdjust(this)"
+                        className={css(ST.textarea)}
                         style={{
-                            background: 'none',
-                            border: 'none',
-                            color: '#fff',
-                            WebkitTextFillColor: 'transparent',
-                            fontFamily: 'lato, sans-serif',
-                            width: '100%',
                             height: (this.state.textAreaHeight) + "px",
-                            overflow: 'hidden',
-                            outline: 'none',
-                            fontSize: 70,
-                            lineHeight: '92px',
-                            letterSpacing: '2px',
-                            padding: 0,
                         }}
                         ref={(ref) => this.inputTextarea = ref}
                         onKeyUp={(e) => {
@@ -267,11 +248,12 @@ const App = React.createClass({
             </div>
             <div className={css(ST.sidebar)}>
                 <div>
-                    <div style={{ marginBottom: 20 }}>
-                        <a
-                            className={css(ST.button)}
-                            href={url}>Permalink these colors</a>
-                    </div>
+                    <a
+                        className={css(ST.button)}
+                        href={url}
+                    >
+                        Permalink these colors
+                    </a>
                     <ColorPickerScreen
                         activeGlyph={activeGlyph}
                         activeColor={activeColor}
@@ -280,11 +262,17 @@ const App = React.createClass({
                 <div>
                     {_.map(glyphs, (glyph, idx) => {
                         const color = colors[glyph];
+                        const glyphsPerRow = 5;
+                        const glyphSize = Math.floor(
+                            (SC.sidebarWidth -
+                            (glyphsPerRow * 2) * SC.glyphMargin) /
+                            glyphsPerRow
+                        );
 
                         return <Glyph
                                 key={glyph}
                                 color={color}
-                                size={51}
+                                size={glyphSize}
                                 showBackground={true}
                                 onClick={() => {
                                         this.setState({
@@ -302,6 +290,45 @@ const App = React.createClass({
 });
 
 const ST = StyleSheet.create({
+    colorPickerWrapper: {
+        display: 'inline-block',
+        verticalAlign: 'top',
+        margin: SC.glyphMargin,
+    },
+
+    textContainer: {
+        background: 'radial-gradient(ellipse at center,'+
+                    'rgba(100,100,100,1) 0%,'+
+                    'rgba(60,60,60,1) 100%)',
+        overflowY: 'auto',
+        position: 'absolute',
+        top: 0,
+        right: SC.sidebarWidth + 2 * SC.sidebarPadding,
+        bottom: 0,
+        left: 0
+    },
+    innerTextContainer: {
+        boxSizing: 'border-box',
+        padding: '20px 20px 40px',
+        position: 'absolute',
+        width: '100%',
+        zIndex: 1000,
+    },
+
+    textarea: {
+        background: 'none',
+        border: 'none',
+        color: '#fff',
+        WebkitTextFillColor: 'transparent',
+        fontFamily: 'lato, sans-serif',
+        width: '100%',
+        overflow: 'hidden',
+        outline: 'none',
+        fontSize: 70,
+        lineHeight: '92px',
+        letterSpacing: '2px',
+        padding: 0,
+    },
     outputText: {
         margin: '20px 20px 40px',
         position: 'relative',
@@ -316,24 +343,26 @@ const ST = StyleSheet.create({
 
     sidebar: {
         background: '#222',
+        boxSizing: 'border-box',
         position: 'absolute',
         right: 0,
         top: 0,
         bottom: 0,
-        padding: 20,
+        padding: SC.sidebarPadding,
         overflowY: 'auto',
         textAlign: 'center',
-        width: 350,
+        width: SC.sidebarWidth + 2 * SC.sidebarPadding,
     },
     button: {
         background: '#eee',
         border: '1px solid #ddd',
-        borderRadius: 5,
+        borderRadius: 3,
         boxSizing: 'border-box',
         color: '#444',
         display: 'inline-block',
-        fontSize: 20,
-        padding: 10,
+        fontSize: 14,
+        marginBottom: 20,
+        padding: 5,
         textDecoration: 'none',
         width: '100%',
     },
