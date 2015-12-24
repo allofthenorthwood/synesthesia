@@ -44,6 +44,9 @@ const SC = {
     outputTextSize: 30,
     letterSpacing: 2,
     lineHeight: 1.3,
+
+    mediaMedium: `@media (max-width: 767px)`,
+    mediaSmall: `@media (max-width: 550px)`,
 };
 
 const Glyph = (props) => {
@@ -153,7 +156,7 @@ const App = React.createClass({
             activeGlyph: glyphs[0],
             colors: this.getColors(),
             textValue: 'The quick brown fox jumps over the lazy dog',
-            textAreaHeight: 300,
+            textAreaHeight: 200,
         };
     },
     getColors: function() {
@@ -250,7 +253,7 @@ const App = React.createClass({
                 </div>
             </div>
             <div className={css(ST.sidebar)}>
-                <div>
+                <div className={css(ST.sidebarTopContent)}>
                     <a
                         className={css(ST.button)}
                         href={url}
@@ -308,7 +311,11 @@ const ST = StyleSheet.create({
         top: 0,
         right: SC.sidebarWidth + 2 * SC.sidebarPadding,
         bottom: 0,
-        left: 0
+        left: 0,
+        [SC.mediaMedium]: {
+            position: 'relative',
+            height: 300,
+        },
     },
     innerTextContainer: {
         boxSizing: 'border-box',
@@ -361,6 +368,20 @@ const ST = StyleSheet.create({
         overflowY: 'auto',
         textAlign: 'center',
         width: SC.sidebarWidth + 2 * SC.sidebarPadding,
+        [SC.mediaMedium]: {
+            width: '100%',
+            position: 'relative',
+        },
+    },
+    sidebarTopContent: {
+        [SC.mediaMedium]: {
+            float: 'left',
+            marginRight: 10,
+        },
+        [SC.mediaSmall]: {
+            float: 'none',
+            marginRight: 0,
+        },
     },
     button: {
         background: '#eee',
