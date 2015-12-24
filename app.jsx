@@ -37,11 +37,11 @@ const getParameterByName = function(name) {
 const SC = {
     // Style constants
     sidebarWidth: 200,
-    sidebarPadding: 20,
+    sidebarPadding: 10,
     hueWidth: 10,
-    glyphMargin: 3,
+    glyphMargin: 2,
 
-    outputTextSize: 40,
+    outputTextSize: 30,
     letterSpacing: 2,
     lineHeight: 1.3,
 };
@@ -276,7 +276,7 @@ const App = React.createClass({
                 <div>
                     {_.map(glyphs, (glyph, idx) => {
                         const color = colors[glyph];
-                        const glyphsPerRow = 5;
+                        const glyphsPerRow = 6;
                         const glyphSize = Math.floor(
                             (SC.sidebarWidth -
                             (glyphsPerRow * 2) * SC.glyphMargin) /
@@ -378,8 +378,9 @@ const ST = StyleSheet.create({
         boxSizing: 'border-box',
         color: '#444',
         display: 'inline-block',
-        fontSize: 14,
-        marginBottom: 20,
+        fontSize: 12,
+        margin: 2,
+        marginBottom: 5,
         padding: 5,
         textDecoration: 'none',
         width: '100%',
