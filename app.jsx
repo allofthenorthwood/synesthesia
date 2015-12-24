@@ -63,14 +63,14 @@ const Glyph = (props) => {
         textShadow =
             '0 1px 0 '+shadeColor2(color, -0.3)+',' +
             '0 2px 0 '+shadeColor2(color, -0.4)+',' +
-            '0 7px 1px rgba(0,0,0,.1),'+
+            '0 4px 1px rgba(0,0,0,.1),'+
             '0 0 5px rgba(0,0,0,.1),'+
             '0 1px 3px rgba(0,0,0,.3)';
     } else {
         textShadow =
             '0 1px 0 '+shadeColor2(color, -0.3)+',' +
             '0 2px 0 '+shadeColor2(color, -0.5)+',' +
-            '0 7px 1px rgba(0,0,0,.1),'+
+            '0 3px 1px rgba(0,0,0,.1),'+
             '0 0 5px rgba(0,0,0,.1)';
     }
     const letterStyles = {
