@@ -333,11 +333,13 @@ const ST = StyleSheet.create({
         WebkitTextFillColor: 'transparent',
     },
     outputText: {
+        lineHeight: SC.lineHeight,
         margin: '20px 20px 40px',
         position: 'relative',
         fontSize: SC.outputTextSize,
     },
     blurredOutputText: {
+        lineHeight: SC.lineHeight,
         opacity: 0.4,
         position: 'absolute',
         top: 0,
