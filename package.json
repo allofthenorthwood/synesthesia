@@ -24,7 +24,7 @@
   "dependencies": {
     "react": "^0.14.1",
     "react-art": "^0.13.0",
-    "react-color-picker": "^2.1.9",
+    "react-color-picker": "^3.1.0",
     "react-dom": "^0.14.2",
     "underscore": "^1.8.3"
   }
