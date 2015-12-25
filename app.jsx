@@ -79,8 +79,9 @@ const Glyph = (props) => {
         display: 'inline-block',
         fontSize: size,
         lineHeight: size * SC.lineHeight + 'px',
-        letterSpacing: SC.letterSpacing,
+        letterSpacing: props.noLetterSpacing ? 0 : SC.letterSpacing,
         textShadow: textShadow,
+        verticalAlign: 'top',
     };
     return <span
             style={letterStyles}
@@ -113,6 +114,7 @@ const SquareGlyph = (props) => {
     return <span style={squareStyles}>
         <Glyph
             {...props}
+            noLetterSpacing={true}
             size={size / SC.lineHeight * 0.9}
         />
     </span>;
