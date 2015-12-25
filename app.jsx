@@ -45,8 +45,8 @@ const SC = {
     letterSpacing: 2,
     lineHeight: 1.3,
 
-    mediaMedium: `@media (max-width: 767px)`,
-    mediaSmall: `@media (max-width: 550px)`,
+    mediaMedium: `@media (max-width: 550px) and (min-width: 421px)`,
+    mediaSmall: `@media (max-width: 420px)`,
 };
 
 const Glyph = (props) => {
@@ -83,35 +83,25 @@ const Glyph = (props) => {
         textShadow: textShadow,
         verticalAlign: 'top',
     };
-    return <span
-            style={letterStyles}
-            onClick={props.onClick}>
+    return <span style={letterStyles}>
         {props.children}
     </span>;
 };
 
 const SquareGlyph = (props) => {
     const size = props.size || 80;
-    const color = props.color || '#eeeeee';
-    let background = '#222';
-    if (size > 100) {
-        background = 'radial-gradient(ellipse at center,'+
-                     'rgba(100,100,100,1) 0%,'+
-                     'rgba(60,60,60,1) 100%)';
-    } else {
-        background = 'radial-gradient(ellipse at center,'+
-                     'rgba(80,80,80,1) 0%,'+
-                     'rgba(60,60,60,1) 100%)';
-    }
     const squareStyles = {
-        background: background,
-        display: 'inline-block',
         height: size,
-        margin: SC.glyphMargin,
-        textAlign: 'center',
         width: size,
     };
-    return <span style={squareStyles}>
+    return <span
+        className={css(
+            ST.squareStyles,
+            props.active && ST.squareStylesActive
+        )}
+        style={squareStyles}
+        onClick={props.onClick}
+    >
         <Glyph
             {...props}
             noLetterSpacing={true}
@@ -267,7 +257,7 @@ const App = React.createClass({
                         activeColor={activeColor}
                         onColorChange={this.onColorChange}/>
                 </div>
-                <div>
+                <div className={css(ST.sidebarBottomContent)}>
                     {_.map(glyphs, (glyph, idx) => {
                         const color = colors[glyph];
                         const glyphsPerRow = 6;
@@ -278,6 +268,7 @@ const App = React.createClass({
                         );
 
                         return <SquareGlyph
+                                active={activeGlyph === glyph}
                                 key={glyph}
                                 color={color}
                                 size={glyphSize}
@@ -315,6 +306,10 @@ const ST = StyleSheet.create({
         bottom: 0,
         left: 0,
         [SC.mediaMedium]: {
+            position: 'relative',
+            height: 300,
+        },
+        [SC.mediaSmall]: {
             position: 'relative',
             height: 300,
         },
@@ -374,6 +369,10 @@ const ST = StyleSheet.create({
             width: '100%',
             position: 'relative',
         },
+        [SC.mediaSmall]: {
+            width: '100%',
+            position: 'relative',
+        },
     },
     sidebarTopContent: {
         [SC.mediaMedium]: {
@@ -381,8 +380,12 @@ const ST = StyleSheet.create({
             marginRight: 10,
         },
         [SC.mediaSmall]: {
-            float: 'none',
-            marginRight: 0,
+            display: 'inline-block',
+        },
+    },
+    sidebarBottomContent: {
+        [SC.mediaMedium]: {
+            marginLeft: SC.sidebarWidth + 10,
         },
     },
     button: {
@@ -398,6 +401,26 @@ const ST = StyleSheet.create({
         padding: 5,
         textDecoration: 'none',
         width: '100%',
+    },
+
+    squareStyles: {
+        background: 'radial-gradient(ellipse at center,'+
+            'rgba(80,80,80,1) 0%,'+
+            'rgba(60,60,60,1) 100%)',
+        cursor: 'pointer',
+        display: 'inline-block',
+        margin: SC.glyphMargin,
+        textAlign: 'center',
+        ':hover': {
+            background: 'radial-gradient(ellipse at center,'+
+                'rgba(60,60,60,1) 0%,'+
+                'rgba(40,40,40,1) 100%)',
+        }
+    },
+    squareStylesActive: {
+        background: 'radial-gradient(ellipse at center,'+
+            'rgba(60,60,60,1) 0%,'+
+            'rgba(40,40,40,1) 100%)',
     },
 });
 
