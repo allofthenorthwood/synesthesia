@@ -96,8 +96,9 @@ const SquareGlyph = (props) => {
     };
     return <span
         className={css(
-            ST.squareStyles,
-            props.active && ST.squareStylesActive
+            ST.square,
+            props.link && ST.squareLink,
+            props.link && props.active && ST.squareLinkActive
         )}
         style={squareStyles}
         onClick={props.onClick}
@@ -273,6 +274,7 @@ const App = React.createClass({
                                 color={color}
                                 size={glyphSize}
                                 showBackground={true}
+                                link={true}
                                 onClick={() => {
                                         this.setState({
                                             activeGlyph: glyph
@@ -403,21 +405,23 @@ const ST = StyleSheet.create({
         width: '100%',
     },
 
-    squareStyles: {
+    square: {
         background: 'radial-gradient(ellipse at center,'+
             'rgba(80,80,80,1) 0%,'+
             'rgba(60,60,60,1) 100%)',
-        cursor: 'pointer',
         display: 'inline-block',
         margin: SC.glyphMargin,
         textAlign: 'center',
+    },
+    squareLink: {
+        cursor: 'pointer',
         ':hover': {
             background: 'radial-gradient(ellipse at center,'+
                 'rgba(60,60,60,1) 0%,'+
                 'rgba(40,40,40,1) 100%)',
         }
     },
-    squareStylesActive: {
+    squareLinkActive: {
         background: 'radial-gradient(ellipse at center,'+
             'rgba(60,60,60,1) 0%,'+
             'rgba(40,40,40,1) 100%)',
