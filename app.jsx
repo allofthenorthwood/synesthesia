@@ -148,7 +148,12 @@ const App = React.createClass({
         return {
             activeGlyph: glyphs[0],
             colors: this.getColors(),
-            textValue: 'The quick brown fox jumps over the lazy dog',
+            textValue: `The quick brown fox jumps over the lazy dog
+
+Hi my name is _________
+
+16777216
+33554432`,
             textAreaHeight: 200,
         };
     },
