@@ -68,9 +68,9 @@ const Glyph = (props) => {
             '0 1px 3px rgba(0,0,0,.3)';
     } else {
         textShadow =
-            '0 1px 0 '+shadeColor2(color, -0.5)+',' +
-            '0 2px 0 '+shadeColor2(color, -0.7)+',' +
-            '0 3px 1px rgba(0,0,0,.2s),'+
+            '0 1px 0 '+shadeColor2(color, -0.4)+',' +
+            '0 2px 0 '+shadeColor2(color, -0.5)+',' +
+            '0 3px 1px rgba(0,0,0,.2),'+
             '0 0 5px rgba(0,0,0,.1)';
     }
     const letterStyles = {
@@ -359,7 +359,7 @@ const ST = StyleSheet.create({
     },
     blurredOutputText: {
         lineHeight: SC.lineHeight,
-        opacity: 0.6,
+        opacity: 0.5,
         WebkitFilter: 'blur(14px)'
     },
     outputSpace: {
@@ -418,7 +418,7 @@ const ST = StyleSheet.create({
 
     square: {
         background: 'radial-gradient(ellipse at center,'+
-            'rgba(80,80,80,1) 0%,'+
+            'rgba(90,90,90,1) 0%,'+
             'rgba(60,60,60,1) 100%)',
         display: 'inline-block',
         margin: SC.glyphMargin,
