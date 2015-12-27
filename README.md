@@ -3,7 +3,7 @@ Synesthesia: Grapheme-to-Color
 
 Do you associate each letter and digit with a particular color? If so, you can use this handy tool to show your colors to your friends how you see the world!
 
-You can start from a [blank template](http://allofthenorthwood.github.io/synesthesia/) or [explore my colors](http://allofthenorthwood.github.io/synesthesia/?colors=%7B%220%22%3A%22%23313133%22%2C%221%22%3A%22%23f9f6e5%22%2C%222%22%3A%22%23d64286%22%2C%223%22%3A%22%2345bf91%22%2C%224%22%3A%22%23e43f3f%22%2C%225%22%3A%22%238b5538%22%2C%226%22%3A%22%23b93b70%22%2C%227%22%3A%22%23f4bc47%22%2C%228%22%3A%22%23403562%22%2C%229%22%3A%22%23653e74%22%2C%22a%22%3A%22%23bd3838%22%2C%22l%22%3A%22%23faf18c%22%2C%22b%22%3A%22%232a334f%22%2C%22c%22%3A%22%23fee15d%22%2C%22d%22%3A%22%23623c30%22%2C%22e%22%3A%22%23427239%22%2C%22f%22%3A%22%238d694d%22%2C%22g%22%3A%22%2351763f%22%2C%22h%22%3A%22%23ba7242%22%2C%22i%22%3A%22%23fcf6d9%22%2C%22j%22%3A%22%2373966d%22%2C%22k%22%3A%22%235f6370%22%2C%22m%22%3A%22%23b3335f%22%2C%22n%22%3A%22%23eb7f1c%22%2C%22o%22%3A%22%2325252c%22%2C%22p%22%3A%22%23603b7f%22%2C%22q%22%3A%22%23705448%22%2C%22r%22%3A%22%23691c1c%22%2C%22s%22%3A%22%23d1465f%22%2C%22t%22%3A%22%234a6250%22%2C%22u%22%3A%22%23ddbd96%22%2C%22v%22%3A%22%23676e80%22%2C%22w%22%3A%22%238c6a5a%22%2C%22x%22%3A%22%23363c44%22%2C%22y%22%3A%22%23fbdb4a%22%2C%22z%22%3A%22%235a606e%22%7D).
+You can start from a [blank template](http://allofthenorthwood.github.io/synesthesia/) or [explore my colors](http://allofthenorthwood.github.io/synesthesia/?colors=%7B"0"%3A"%23313133"%2C"1"%3A"%23f9f6e5"%2C"2"%3A"%23d64286"%2C"3"%3A"%2345bf91"%2C"4"%3A"%23c72727"%2C"5"%3A"%238e5837"%2C"6"%3A"%23b93b70"%2C"7"%3A"%23f4bc47"%2C"8"%3A"%2336355f"%2C"9"%3A"%23653e74"%2C"a"%3A"%23d83a3a"%2C"l"%3A"%23fae08c"%2C"b"%3A"%233c4b71"%2C"c"%3A"%23fee15d"%2C"d"%3A"%238e6558"%2C"e"%3A"%236ba921"%2C"f"%3A"%23806d5f"%2C"g"%3A"%235b7712"%2C"h"%3A"%23de996a"%2C"i"%3A"%23fcf6d9"%2C"j"%3A"%238eaf88"%2C"k"%3A"%235f6370"%2C"m"%3A"%23b3335f"%2C"n"%3A"%23eb7f1c"%2C"o"%3A"%23343444"%2C"p"%3A"%235a367a"%2C"q"%3A"%2377655e"%2C"r"%3A"%23a0452d"%2C"s"%3A"%23d14680"%2C"t"%3A"%23738577"%2C"u"%3A"%23ddbd96"%2C"v"%3A"%23748875"%2C"w"%3A"%23687174"%2C"x"%3A"%23363c44"%2C"y"%3A"%23fbdb4a"%2C"z"%3A"%235a606e"%7D).
 
 ![Image of the synesthesia viewer](../master/screenshots/viewer.png?raw=true)
 
@@ -12,8 +12,7 @@ You can start from a [blank template](http://allofthenorthwood.github.io/synesth
 Warning: This is pretty hacky. To try it locally, run:
 
 ```
-npm install
-webpack-dev-server --progress --colors --port 8090
+make serve
 ```
 then go to
 ```
