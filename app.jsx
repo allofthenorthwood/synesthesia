@@ -63,14 +63,14 @@ const Glyph = (props) => {
         textShadow =
             '0 1px 0 '+shadeColor2(color, -0.3)+',' +
             '0 2px 0 '+shadeColor2(color, -0.4)+',' +
-            '0 4px 1px rgba(0,0,0,.1),'+
-            '0 0 5px rgba(0,0,0,.1),'+
+            '0 4px 1px rgba(0,0,0,.2),'+
+            '0 0 5px rgba(0,0,0,.2),'+
             '0 1px 3px rgba(0,0,0,.3)';
     } else {
         textShadow =
-            '0 1px 0 '+shadeColor2(color, -0.3)+',' +
-            '0 2px 0 '+shadeColor2(color, -0.5)+',' +
-            '0 3px 1px rgba(0,0,0,.1),'+
+            '0 1px 0 '+shadeColor2(color, -0.5)+',' +
+            '0 2px 0 '+shadeColor2(color, -0.7)+',' +
+            '0 3px 1px rgba(0,0,0,.2s),'+
             '0 0 5px rgba(0,0,0,.1)';
     }
     const letterStyles = {
@@ -182,7 +182,7 @@ Hi my name is _________
         const stringifyColors = encodeURIComponent(JSON.stringify(colors));
         const url = '?' + 'colors=' + stringifyColors;
 
-        const printText = function(text) {
+        const printText = function(text, textColor) {
             return _.map(text.split("\n"), (line, lineIdx) => {
 
                 const words = line.split(' ');
@@ -199,7 +199,8 @@ Hi my name is _________
                         return <span key={wordIdx}>
                             <span style={{ display: 'inline-block' }}>
                             {_.map(word, (letter, letterIdx) => {
-                                const color = colors[letter.toLowerCase()];
+                                const color = textColor ? textColor :
+                                    colors[letter.toLowerCase()];
                                 return <Glyph
                                     key={letterIdx}
                                     size={SC.outputTextSize}
@@ -244,9 +245,11 @@ Hi my name is _________
                         }}></textarea>
                 </div>
                 <div className={css(ST.outputText)}>
-                    {printText(this.state.textValue)}
-                    <div className={css(ST.blurredOutputText)}>
+                    <div className={css(ST.outputTextContent)}>
                         {printText(this.state.textValue)}
+                    </div>
+                    <div className={css(ST.blurredOutputText)}>
+                        {printText(this.state.textValue, "#fff")}
                     </div>
                 </div>
             </div>
@@ -349,11 +352,14 @@ const ST = StyleSheet.create({
         position: 'relative',
         fontSize: SC.outputTextSize,
     },
-    blurredOutputText: {
-        lineHeight: SC.lineHeight,
-        opacity: 0.4,
+    outputTextContent: {
         position: 'absolute',
         top: 0,
+        zIndex: 1,
+    },
+    blurredOutputText: {
+        lineHeight: SC.lineHeight,
+        opacity: 0.6,
         WebkitFilter: 'blur(14px)'
     },
     outputSpace: {
