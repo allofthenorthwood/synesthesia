@@ -413,7 +413,13 @@ const ST = StyleSheet.create({
         marginBottom: 5,
         padding: 5,
         textDecoration: 'none',
+        transition: 'all 0.2s',
+        transitionProperty: 'color, background',
         width: '100%',
+        ':hover': {
+            background: '#d4d4d4',
+            color: '#222',
+        },
     },
 
     square: {
