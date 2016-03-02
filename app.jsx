@@ -3,6 +3,7 @@ const { StyleSheet, css } = require('./lib/aphrodite.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
 const ColorPicker = require('react-color-picker');
+const { CompositeDecorator, ContentState, Editor, EditorState } = require('draft-js');
 
 
 const glyphs = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -65,7 +66,8 @@ const Glyph = (props) => {
             '0 2px 0 '+shadeColor2(color, -0.4)+',' +
             '0 4px 1px rgba(0,0,0,.2),'+
             '0 0 5px rgba(0,0,0,.2),'+
-            '0 1px 3px rgba(0,0,0,.3)';
+            '0 1px 3px rgba(0,0,0,.3),'+
+            '0 0 42px rgba(255,255,255,0.5)';
     } else {
         textShadow =
             '0 1px 0 '+shadeColor2(color, -0.4)+',' +
@@ -74,14 +76,10 @@ const Glyph = (props) => {
             '0 0 5px rgba(0,0,0,.1)';
     }
     const letterStyles = {
-        boxSizing: 'border-box',
         color: color,
-        display: 'inline-block',
         fontSize: size,
-        lineHeight: size * SC.lineHeight + 'px',
         letterSpacing: props.noLetterSpacing ? 0 : SC.letterSpacing,
         textShadow: textShadow,
-        verticalAlign: 'top',
     };
     return <span style={letterStyles}>
         {props.children}
@@ -143,23 +141,52 @@ const ColorPickerScreen = React.createClass({
     }
 });
 
+const getDecoratorForColors = (colors) => {
+    return new CompositeDecorator([{
+        strategy: (contentBlock, callback) => {
+            const text = contentBlock.getText();
+            for (let ii = 0; ii < text.length; ii++) {
+                callback(ii, ii + 1);
+            }
+        },
+        component: (props) => {
+            // TODO: This isn't public Draft.js API.
+            const letter = props.children.map((leaf) => leaf.props.text).join('');
+            const color = colors[letter.toLowerCase()];
+            return <Glyph
+                size={SC.outputTextSize}
+                color={color}>
+                {props.children}
+            </Glyph>;
+        },
+    }]);
+};
+
 const App = React.createClass({
     getInitialState: function() {
-        return {
-            activeGlyph: glyphs[0],
-            colors: this.getColors(),
-            textValue: `The quick brown fox jumps over the lazy dog
+        const text = `The quick brown fox jumps over the lazy dog
 
 Hi my name is _________
 
 16777216
-33554432`,
-            textAreaHeight: 200,
+33554432`;
+        const colors = this.getColors();
+
+        return {
+            activeGlyph: glyphs[0],
+            colors: colors,
+            editorState: EditorState.createWithContent(
+                ContentState.createFromText(text),
+                getDecoratorForColors(colors)
+            ),
         };
     },
     getColors: function() {
         const colors = getParameterByName('colors');
         return colors.length ? JSON.parse(colors) : {};
+    },
+    onEditorChange: function(editorState) {
+      this.setState({editorState});
     },
     onColorChange: function(color) {
         let colors = _.clone(this.state.colors);
@@ -167,11 +194,9 @@ Hi my name is _________
         colors[glyph] = color;
         this.setState({
             colors: colors,
-        });
-    },
-    componentDidMount: function() {
-        this.setState({
-            textAreaHeight: this.inputTextarea.scrollHeight,
+            editorState: EditorState.set(this.state.editorState, {
+                decorator: getDecoratorForColors(colors),
+            })
         });
     },
     render: function() {
@@ -182,74 +207,15 @@ Hi my name is _________
         const stringifyColors = encodeURIComponent(JSON.stringify(colors));
         const url = '?' + 'colors=' + stringifyColors;
 
-        const printText = function(text, textColor) {
-            return _.map(text.split("\n"), (line, lineIdx) => {
-
-                const words = line.split(' ');
-                return <div
-                    key={lineIdx}
-                    style={{
-                        height: line.trim().length === 0 ? SC.outputTextSize * SC.lineHeight : 'auto',
-                        wordWrap: 'break-word',
-                        whiteSpace: 'pre-wrap',
-                    }}
-                >
-                    {_.map(words, (word, wordIdx) => {
-
-                        return <span key={wordIdx}>
-                            <span style={{ display: 'inline-block' }}>
-                            {_.map(word, (letter, letterIdx) => {
-                                const color = textColor ? textColor :
-                                    colors[letter.toLowerCase()];
-                                return <Glyph
-                                    key={letterIdx}
-                                    size={SC.outputTextSize}
-                                    color={color}>
-                                    {letter}
-                                </Glyph>;
-                            })}
-                            </span>
-                            {wordIdx !== words.length - 1 &&
-                                <span className={css(ST.outputSpace)}>
-                                    &nbsp;
-                            </span>}
-                        </span>;
-                    })}
-                </div>;
-            });
-        };
-
         const glyphButtonSize = SC.sidebarWidth
 
         return (<div>
             <div className={css(ST.textContainer)}>
                 <div className={css(ST.innerTextContainer)}>
-                    <textarea
-                        type="text"
-                        onkeyup="textAreaAdjust(this)"
-                        className={css(ST.textarea)}
-                        style={{
-                            height: (this.state.textAreaHeight) + "px",
-                        }}
-                        ref={(ref) => this.inputTextarea = ref}
-                        onKeyUp={(e) => {
-                            this.setState({
-                                textAreaHeight: e.target.scrollHeight,
-                            });
-                        }}
-                        value={this.state.textValue}
-                        onChange={(e) => {
-                            this.setState({
-                                textValue: e.target.value
-                            });
-                        }}></textarea>
-                </div>
-                <div className={css(ST.outputText)}>
                     <div className={css(ST.outputTextContent)}>
-                        {printText(this.state.textValue)}
-                    </div>
-                    <div className={css(ST.blurredOutputText)}>
-                        {printText(this.state.textValue, "#fff")}
+                        <Editor
+                            editorState={this.state.editorState}
+                            onChange={this.onEditorChange} />
                     </div>
                 </div>
             </div>
@@ -326,45 +292,12 @@ const ST = StyleSheet.create({
     },
     innerTextContainer: {
         boxSizing: 'border-box',
+        fontSize: SC.outputTextSize,
+        letterSpacing: SC.letterSpacing,
+        lineHeight: SC.lineHeight,
         padding: '20px 20px 40px',
         position: 'absolute',
         width: '100%',
-        zIndex: 1000,
-    },
-
-    textarea: {
-        background: 'none',
-        border: 'none',
-        color: '#fff',
-        fontFamily: 'lato, sans-serif',
-        width: '100%',
-        overflow: 'hidden',
-        outline: 'none',
-        fontSize: SC.outputTextSize,
-        lineHeight: SC.lineHeight,
-        letterSpacing: SC.letterSpacing,
-        padding: 0,
-        WebkitTextFillColor: 'transparent',
-    },
-    outputText: {
-        lineHeight: SC.lineHeight,
-        margin: '20px 20px 40px',
-        position: 'relative',
-        fontSize: SC.outputTextSize,
-    },
-    outputTextContent: {
-        position: 'absolute',
-        top: 0,
-        zIndex: 1,
-    },
-    blurredOutputText: {
-        lineHeight: SC.lineHeight,
-        opacity: 0.5,
-        WebkitFilter: 'blur(14px)'
-    },
-    outputSpace: {
-        display: 'inline-block',
-        letterSpacing: SC.letterSpacing
     },
 
     sidebar: {
@@ -427,6 +360,7 @@ const ST = StyleSheet.create({
             'rgba(90,90,90,1) 0%,'+
             'rgba(60,60,60,1) 100%)',
         display: 'inline-block',
+        lineHeight: SC.lineHeight,
         margin: SC.glyphMargin,
         textAlign: 'center',
     },
